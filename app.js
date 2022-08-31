@@ -1,4 +1,6 @@
 const express = require('express');
+const mongoose = require('mongoose');
+require('dotenv/config')
 const app = express();
 const routes = require('./routes/tasks');
 
@@ -14,6 +16,14 @@ app.get('/hello',(req,res)=>{
 //Middleware for routes
 app.use('/api/v1/tasks',routes);
 
+
+// connect to db
+mongoose.connect(process.env.DB_CONNECTION,{ useNewUrlParser: true, useUnifiedTopology:true, },(error)=>{
+    if(error){
+        return console.log(error);
+    }
+    console.log('Connected to MongoDB Atlas succesfully ...');
+});
 
 
 app.listen(port,()=>{
