@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const connectDB = require('./db/connection');
 require('dotenv/config')
 const app = express();
 const routes = require('./routes/tasks');
@@ -18,14 +19,15 @@ app.use('/api/v1/tasks',routes);
 
 
 // connect to db
-mongoose.connect(process.env.DB_CONNECTION,{ useNewUrlParser: true, useUnifiedTopology:true, },(error)=>{
-    if(error){
-        return console.log(error);
+const start = async () => {
+    try {
+        await connectDB(process.env.DB_CONNECTION);
+        app.listen(port,()=>{
+            console.log(`Server is listening on port:${port}...`);
+        });
+    } catch (error) {
+        console.log(error);
     }
-    console.log('Connected to MongoDB Atlas succesfully ...');
-});
+}
 
-
-app.listen(port,()=>{
-    console.log(`Server is listening on port:${port}...`);
-})
+start();
